@@ -1,120 +1,60 @@
-let directions = {
-  IDLE: 0,
-  UP: 1,
-  DOWN: 2,
-  LEFT: 3,
-  RIGHT: 4,
-};
+document.addEventListener("DOMContentLoaded", () => {
+  const canvas = document.querySelector("#pong-canvas");
+  const context = canvas.getContext("2d")
 
-let rounds = [5, 5, 3, 3, 2];
-let colors = ["#1abc9c", "#2ecc71", "#3498db", "#8c52ff", "#9b59b6"];
-
-let Ball = {
-  new: function (incrementSpeed) {
-    return {
-      width: 18,
-      height: 18,
-      x: this.canvas.width / 2 - 9,
-      y: this.canvas.height / 2 - 9,
-      moveX: DIRECTION.IDLE,
-      moveY: DIRECTION.IDLE,
-      speed: incrementSpeed || 7,
-    };
-  },
-};
-
-let Ai = {
-  new: function (side) {
-    return {
-      width: 18,
-      height: 180,
-      x: side === "left" ? 150 : this.canvas.width - 150,
-      y: this.canvas.height / 2 - 35,
-      score: 0,
-      move: DIRECTION.IDLE,
-      speed: 8,
-    };
-  },
-
-};
+  
+  const paddle = {
+    paddleWidth: 10,
+    paddleHeight: 80,
+    x: 0,
+    y: canvas.height / 2 - 40,
+    dy: 8,
+    upPressed: false,
+    downPressed: false,
+  };
 
 
+  //DESENHA BOLA
 
-let Game = {
-    initialize: function () {
-        this.canvas = document.querySelector("canvas");
-        this.context = this.canvas.getContext("2d");
 
-        this.canvas.width = 1400;
-        this.canvas.height = 1000;
+  function createPaddle() {
+    context.beginPath();
+    context.rect(paddle.x, paddle.y, paddle.paddleWidth, paddle.paddleHeight);
+    context.fillStyle = "#fff"
+    context.fill();
+    context.closePath()
+  }
 
-        this.canvas.style.width = (this.canvas.width / 2) + "px";
-        this.canvas.style.height = (this.canvas.width / 2) + "px";
 
-        this.player = Ai.new.call(this, "left");
-        this.ai = Ai.new.call(this, "right");
-        this.ball = Ball.new.call(this);
-
-        this.ai.speed = 5;
-        this.running = this.over = false;
-        this.turn = this.ai;
-        this.timer = this.round = 0;
-        this.color = "#8552ff"
-
-        Pong.menu();
-        Pong.listen();
-    },
-
-    endGameMenu: function(text) {
-        Pong.context.font = "45px Courier New";
-        Pong.context.fillStyle = this.color;
-
-        Pong.context.fillRect(
-            Pong.canvas.width / 2 - 350,
-            Pong.canvas.height / 2 -48,
-            700,
-            100
-        );
-
-        Pong.context.fillStyle = "#ffffff";
-
-        Pong.context.fillText(text,
-            Pong.canvas.width / 2 -350,
-            Pong.canvas.height /2 + 48,
-            700,
-            100
-        );
-
-        Pong.context.fillStyle = "#ffffff";
-
-        Pong.context.fillText(text,
-            Pong.canvas.width / 2,
-            Pong.canvas.height / 2 +15
-        );
-
-        setTimeout(function () {
-            Pong = Object.assign({}, Game);
-            Pong.initialize();
-        }, 3000);
-    },
-
-    menu: function () {
-        Pong.draw();
-
-        this.context.font = "50px Courier New";
-        this.context.fillStyle = this.color;
-
-        this.context.fillRect(
-            this.canvas.width / 2 - 350,
-            this.canvas.height / 2 - 48,
-            700,
-            100
-        );
-
-        this.context.fillStyle = "Press any key to begin",
-        this.canvas.width / 2,
-        this.canvas.height / 2 + 15
+  function update() {
+    if (paddle.upPressed && paddle.y > 0) {
+      paddle.y -= paddle.dy
+    } else if (paddle.downPressed && paddle.y + paddle.heigth < canvas.heigth){
+      paddle.y += paddle.dy
     }
-}
 
-Pong.initialize()
+    context.clearRect(0, 0 , canvas.padlleWidth , canvas.paddleHeight)
+
+    createPaddle()
+    requestAnimationFrame(update)
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowUp" || event.key === "Up") {
+      paddle.upPressed = true;
+    } else if (event.key === "ArrowDown" || event.key === "Down") {
+      paddle.downPressed = true;
+    }
+  });
+
+  document.addEventListener("keyup", (event) => {
+    if (event.key === "ArrowUp" || event.key === "Up") {
+      paddle.upPressed = false;
+    } else if (event.key === "ArrowDown" || event.key === "Down") {
+      paddle.downPressed = false;
+    }
+  });
+
+  update()
+})
+
