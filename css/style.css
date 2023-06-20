@@ -39,3 +39,25 @@ canvas {
   margin: 20px auto;
   border: 1px solid #fff;
 }
+
+button {
+  margin-bottom: 0.5rem;
+  height: 3rem;
+  width: 13rem;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #ccc;
+  color: #000;
+}
+
+button:hover{
+  background-color: #000;
+  color: #fff;
+}
+
+button:disabled{
+  background-color: white;
+  color: #ccc;
+  cursor: none;
+}
+
